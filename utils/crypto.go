@@ -2,15 +2,11 @@ package utils
 
 import (
   "encoding/hex"
-  "fmt"
   "github.com/ethereum/go-ethereum/crypto"
+  "strings"
 )
 
-func Keccak256(data string) []byte {
-  return crypto.Keccak256([]byte(data))
-}
-
-// TODO: Delete if unneeded
-func PrintHash(hash []byte) {
-  fmt.Println("0x" + hex.EncodeToString(hash))
+func Selector(args ...string) string {
+  params := "(" + strings.Join(args[1:], ",") + ")"
+  return "0x" + hex.EncodeToString(crypto.Keccak256([]byte(args[0] + params))[:4])
 }
