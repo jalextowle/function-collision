@@ -1,10 +1,9 @@
 package main
 
 import (
-  "encoding/hex"
   "fmt"
   "os"
-  "github.com/ethereum/go-ethereum/crypto"
+  "./utils"
 )
 
 func main() {
@@ -14,13 +13,5 @@ func main() {
     return
   }
 
-  printHash(keccak256("abc"))
-}
-
-func keccak256(data string) []byte {
-  return crypto.Keccak256([]byte(data))
-}
-
-func printHash(hash []byte) {
-  fmt.Println("0x" + hex.EncodeToString(hash))
+  utils.PrintHash(utils.Keccak256("abc"))
 }
