@@ -6,7 +6,7 @@ import (
   "strings"
 )
 
-func Selector(args ...string) string {
+func FunctionSelector(args ...string) string {
   params := "(" + strings.Join(args[1:], ",") + ")"
   return "0x" + hex.EncodeToString(crypto.Keccak256([]byte(args[0] + params))[:4])
 }
