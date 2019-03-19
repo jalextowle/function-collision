@@ -1,8 +1,6 @@
 package utils 
 
-import (
-  "testing"
-)
+import "testing"
 
 /* Function Selector from String Arguments */
 

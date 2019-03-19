@@ -2,7 +2,6 @@
 package utils
 
 import (
-//  "io/ioutil"
   "reflect"
   "testing"
 )
