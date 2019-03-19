@@ -26,8 +26,7 @@ type ABI struct {
 // `truffle compile`.
 type TruffleABI struct {
   ContractName         string
-  // TODO: Replace with []ABI once that type is properly tested
-  Abi                  interface{}
+  Abi                  []ABI 
   Bytecode             string 
   DeployedBytecode     string
   SourceMap            string 

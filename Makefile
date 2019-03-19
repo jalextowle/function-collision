@@ -3,6 +3,6 @@ clean:
 build:
 	go build -o checker
 run:
-	./checker "0x00000000" ./abi_data/ABI.json
+	./checker ./test_data/AppProxyUpgradeable.json ./test_data/ACL.json
 test:
 	go test ./...
