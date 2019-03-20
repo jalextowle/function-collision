@@ -67,62 +67,68 @@ func DecodeTruffleABI(contents []byte) TruffleABI {
   return abi
 }
 
-/* ABI Processing */
+/* ABI Creation */
 
-type parameter struct {
-  type_name  string
-  stack_size int
+type SolidityType struct {
+  StackSize int 
+  Name      string
 }
 
-// This function will return an abi by using the function names within the original abi to 
-// create new function abis with different combinations of parameters made up of the 
-// specified types.
-func ExpandContractABI(param_num int, types []parameter, original []ABI) []ABI {
-  if abi == nil {
-    return
+// TODO: Use the permutation generators to perumte the ABIs
+// Create a contract ABI that soley consists of functions that have the same name as
+// the specfied name. This ABI will consist of all possible combinations of operator overloading 
+// this function name using the specified types that is under the specified maximum stack 
+// size.
+
+/*
+func GenerateABIFromName(function_name string, max_stack_size int, types []SolidityType) []ABI {
+  if max_stack_size == 0 || len(types) == 0 {
+    return []ABI{}
   }
 
-  // This hash table will be used to ensure that the ABI returned by this contract will not have
-  // redundancies 
-  abi_set := make(map[ABI]bool)
-  // Fill up the hash table with the existing ABI
-  for _, abi := range(original) {
-    abi_set[abi] = true
-    // If the type of the abi object is "function", then add all of the new function abis that can
-    // be made with the constraints to the abi
-    if abi.Type == "function" {
-      combinations := ABICombinations(param_num, types, ABI.Name)
-      for _, combination := range(combinations) {
-        new_abi := abi
-        new_abi.Inputs = combination
-        abi_set[new_abi] = true
+  var combinations [][]string
+  // Collect a list of all of the different combinations
+  for i := 0; i < len(types); i++ {
+    // If the current type's stack size is zero, skip it because it will cause an infinite loop
+    if types[i].StackSize != 0 {
+      name := types[i].Name 
+      for j := len(combinations[i]); j < max_stack_size; j += types[i].StackSize {
+        combinations[i][j] = name
       }
     }
   }
 
+  // Permute the combinations and scan out redundancies
+
+  var result []ABI
+  // Generate the ABIs
+
+
+}
+*/
+
+// For all permutations of N numbers, you can add another number and insert it at every point to get the list of permutions.
+// So we start with 1 number, and bootstrap from there
+func generatePermutations(permutation_size int) (result [][]int) {
+  if permutation_size < 1 {
+    return [][]int{}
+  }
+
+  result = [][]int{{0}} 
+  for i := 1; i < permutation_size; i++ {
+    var joins [][]int
+    for j := 0; j < len(result); j++ {
+      joins = append(joins, joinPermutation(result[j], i)...)
+    }
+    result = joins
+  }
+  return
 }
 
-// FIXME: This function has not been tested but it also does not return all of the permutations
-//        of these parameter lists. This will need to be done by the functions using these combinations
-func ABICombinations(param_num int, types []parameter, name string) [][]Param {
-  var result [][]Param
-  if types == nil || param_num == 0 {
-    return [][]Param{} 
+func joinPermutation(permutation []int, new_member int) (result [][]int) {
+  for i := 0; i <= len(permutation); i++ {
+    new_permutation := append(permutation[:i], append([]int{new_member}, permutation[i:]...)...)
+    result = append(result, new_permutation)
   }
-
-  for i := 0; i <= param_num; i += types.stack_size {
-    combinations := ABICombinations(param_num - i, types[1:], name) 
-    var type_params []Param 
-    for j := 0; j <= i; j += types.stack_size {
-      type_params[j] = Param{
-        Name: "",
-        Type: types[0],
-      }
-    }
-    for idx, _ := range(combinations) {
-      combinations[idx] = append(type_params, combinations...)
-    }
-    result = append(result, combinations) 
-  }
-  return result
+  return
 }
