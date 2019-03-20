@@ -79,9 +79,7 @@ type SolidityType struct {
 // the specfied name. This ABI will consist of all possible combinations of operator overloading 
 // this function name using the specified types that is under the specified maximum stack 
 // size.
-
-/*
-func GenerateABIFromName(function_name string, max_stack_size int, types []SolidityType) []ABI {
+func GenerateABIFromName(function_name string, max_stack_size int, types []SolidityType) (result []ABI) {
   if max_stack_size == 0 || len(types) == 0 {
     return []ABI{}
   }
@@ -98,14 +96,23 @@ func GenerateABIFromName(function_name string, max_stack_size int, types []Solid
     }
   }
 
+  var generated_permutations [][][]int
+  var permutated_combinations [][]string
+
+  // TODO: Much of this can probably be refactored into somewhere else
   // Permute the combinations and scan out redundancies
+  for _, v := range(combinations) {
+    if generated_permutations[len(v)] == nil {
+      generated_permutations[len(v)] = generatePermutations(len(v))
+    }
+    permutated := applyPermutations(v, generated_permutations[len(v)])
+    permutated_combinations = append(permutated_combinations, permutated...)
+  }
 
-  var result []ABI
+  // TODO: Filter out redundant permutations
   // Generate the ABIs
-
-
+  return 
 }
-*/
 
 // For all permutations of N numbers, you can add another number and insert it at every point to get the list of permutions.
 // So we start with 1 number, and bootstrap from there
@@ -131,4 +138,23 @@ func joinPermutation(permutation []int, new_member int) (result [][]int) {
     result = append(result, new_permutation)
   }
   return
+}
+
+func applyPermutation(original []string, permutation []int) (result []string) {
+  if len(permutation) == len(original) {
+    // TODO: How should this be handled?
+    return original
+  }
+
+  for i, v := range(permutation) {
+    result[i] = original[v]
+  }
+  return
+}
+
+func applyPermutations(original []string, permutations [][]int) (result [][]string) {
+  for _, v := range(permutations) {
+    result = append(result, applyPermutation(original, v))
+  }
+  return 
 }
