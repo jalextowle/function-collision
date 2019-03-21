@@ -46,7 +46,6 @@ func main() {
       fmt.Println(collision) 
     }
   }
-
 }
 
 func findCollisions(target utils.ABI, source []utils.ABI) []utils.ABI {

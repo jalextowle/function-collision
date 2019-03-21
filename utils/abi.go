@@ -103,9 +103,9 @@ func GenerateABIFromName(function_name string, max_stack_size int, types []Solid
   // Permute the combinations and scan out redundancies
   for _, v := range(combinations) {
     if generated_permutations[len(v)] == nil {
-      generated_permutations[len(v)] = generatePermutations(len(v))
+      generated_permutations[len(v)] = GeneratePermutations(len(v))
     }
-    permutated := applyPermutations(v, generated_permutations[len(v)])
+    permutated := ApplyPermutations(v, generated_permutations[len(v)])
     permutated_combinations = append(permutated_combinations, permutated...)
   }
 
@@ -114,47 +114,3 @@ func GenerateABIFromName(function_name string, max_stack_size int, types []Solid
   return 
 }
 
-// For all permutations of N numbers, you can add another number and insert it at every point to get the list of permutions.
-// So we start with 1 number, and bootstrap from there
-func generatePermutations(permutation_size int) (result [][]int) {
-  if permutation_size < 1 {
-    return [][]int{}
-  }
-
-  result = [][]int{{0}} 
-  for i := 1; i < permutation_size; i++ {
-    var joins [][]int
-    for j := 0; j < len(result); j++ {
-      joins = append(joins, joinPermutation(result[j], i)...)
-    }
-    result = joins
-  }
-  return
-}
-
-func joinPermutation(permutation []int, new_member int) (result [][]int) {
-  for i := 0; i <= len(permutation); i++ {
-    new_permutation := append(permutation[:i], append([]int{new_member}, permutation[i:]...)...)
-    result = append(result, new_permutation)
-  }
-  return
-}
-
-func applyPermutation(original []string, permutation []int) (result []string) {
-  if len(permutation) == len(original) {
-    // TODO: How should this be handled?
-    return original
-  }
-
-  for i, v := range(permutation) {
-    result[i] = original[v]
-  }
-  return
-}
-
-func applyPermutations(original []string, permutations [][]int) (result [][]string) {
-  for _, v := range(permutations) {
-    result = append(result, applyPermutation(original, v))
-  }
-  return 
-}
